@@ -2,10 +2,7 @@ import replicate
 import os
 
 # We'll set this in Colab, but this function runs the model
-def generate_image(prompt, api_token):
-    os.environ["REPLICATE_API_TOKEN"] = api_token
-    
-    # Using 'flux-schnell' because it's fast (great for testing)
+def generate_image(prompt, api_token=None):
     output = replicate.run(
         "prunaai/z-image-turbo",
         input={
