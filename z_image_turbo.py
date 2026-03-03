@@ -1,5 +1,4 @@
 import replicate
-import os
 
 # We'll set this in Colab, but this function runs the model
 def generate_image(prompt, api_token=None):
