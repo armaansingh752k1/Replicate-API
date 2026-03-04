@@ -84,13 +84,13 @@ with gr.Blocks(theme=custom_theme) as demo:
     with gr.Row():
         with gr.Column():
             prompt = gr.Textbox(label="Prompt", lines=4)
-            aspect_ratio = gr.Dropdown(
+            with gr.Accordion(label="Advanced settings", open=False):
+                aspect_ratio = gr.Dropdown(
                 choices=["1:1", "16:9", "3:2", "2:3", "3:4", "4:3", "9:16"],
                 value="3:4", label="Aspect Ratio"
             )
-            steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
-            quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
-            
+                steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
+                quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
             
             with gr.Row():
                 randomize = gr.Checkbox(label="Random Seed", value=True)
@@ -102,8 +102,9 @@ with gr.Blocks(theme=custom_theme) as demo:
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
             out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
             #out_img = gr.File(label="Download Image")
-            download_file = gr.File(label="Download Image")
-            out_seed = gr.Number(label="Used Seed", interactive=False)
+            with gr.Accordion(label="Status", open=False):
+			    download_file = gr.File(label="Download Image:")
+                out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
     btn.click(generate_image, [prompt, aspect_ratio, steps, quality, seed, randomize], [out_img, download_file, out_seed])
