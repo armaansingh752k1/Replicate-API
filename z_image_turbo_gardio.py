@@ -63,9 +63,9 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
         response = requests.get(image_url)
         image = Image.open(BytesIO(response.content))
         filename = f"z_image_turbo_{seed}.png"
-image.save(filename)
+        image.save(filename)
 
-return filename, seed
+        return filename, seed
         
 
     except Exception as e:
