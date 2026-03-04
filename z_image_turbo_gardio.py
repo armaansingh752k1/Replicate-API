@@ -6,24 +6,30 @@ import replicate
 from PIL import Image
 from io import BytesIO
 
+
 def get_dimensions(ratio_str, max_side=1536):
     """Calculates width and height based on ratio string to hit max resolution."""
     ratios = {
-        "1:1": (1, 1), "16:9": (16, 9), 
-        "3:2": (3, 2), "2:3": (2, 3), "3:4": (3, 4), "4:3": (4, 3), 
-        "9:16": (9, 16)
+        "1:1": (1, 1),
+        "16:9": (16, 9),
+        "3:2": (3, 2),
+        "2:3": (2, 3),
+        "3:4": (3, 4),
+        "4:3": (4, 3),
+        "9:16": (9, 16),
     }
     rw, rh = ratios.get(ratio_str, (1, 1))
-    
+
     if rw > rh:
         w = max_side
         h = int((max_side * rh) / rw)
     else:
         h = max_side
         w = int((max_side * rw) / rh)
-    
+
     # Ensure dimensions are multiples of 8 for the model
     return (w // 8) * 8, (h // 8) * 8
+
 
 def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, seed, randomize_seed):
     token = os.environ.get("REPLICATE_API_TOKEN")
@@ -32,10 +38,10 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
 
     if randomize_seed:
         seed = random.randint(0, 2**32 - 1)
-    
+
     # Calculate target dimensions for 2048px resolution
     width, height = get_dimensions(aspect_ratio, max_side=1536)
-    
+
     try:
         # Using Flux-Schnell with explicit dimensions and format
         output = replicate.run(
@@ -46,14 +52,14 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
                 "num_inference_steps": int(num_inference_steps),
                 "width": width,
                 "height": height,
-                "output_quality": int(output_quality)
-            }
+                "output_quality": int(output_quality),
+            },
         )
-        
+
         # Handle Output
         if isinstance(output, list) and len(output) > 0:
             image_url = output[0]
-        elif hasattr(output, 'url'):
+        elif hasattr(output, "url"):
             image_url = output.url
         else:
             # Fallback for direct binary stream
@@ -66,48 +72,54 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
         image.save(filename)
 
         return image, filename, seed
-        
 
     except Exception as e:
         raise gr.Error(f"Replicate Error: {str(e)}")
 
+
 # Custom theme
 custom_theme = gr.themes.Soft(
-    primary_hue="yellow",
-    secondary_hue="amber",
-    neutral_hue="slate"
+    primary_hue="yellow", secondary_hue="amber", neutral_hue="slate"
 )
 
 with gr.Blocks(theme=custom_theme) as demo:
-    gr.Markdown("# Z-Image-Turbo (via Replicate API)\nGenerate realistic images with 'prunaai/z-image-turbo'")
-    
+    gr.Markdown(
+        "# Z-Image-Turbo (via Replicate API)\nGenerate realistic images with 'prunaai/z-image-turbo'"
+    )
+
     with gr.Row():
         with gr.Column():
             prompt = gr.Textbox(label="Prompt", lines=4)
             with gr.Accordion(label="Advanced settings", open=False):
                 aspect_ratio = gr.Dropdown(
-                choices=["1:1", "16:9", "3:2", "2:3", "3:4", "4:3", "9:16"],
-                value="3:4", label="Aspect Ratio"
-            )
+                    choices=["1:1", "16:9", "3:2", "2:3", "3:4", "4:3", "9:16"],
+                    value="3:4",
+                    label="Aspect Ratio",
+                )
                 steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
-                quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
-            
+                quality = gr.Slider(1, 100, value=80, step=1, label="Output quality")
+
             with gr.Row():
-				randomize = gr.Checkbox(label="Random Seed", value=True)
-				seed = gr.Number(label="Seed", value=42, visible=False)
-            
+                randomize = gr.Checkbox(label="Random Seed", value=True)
+                seed = gr.Number(label="Seed", value=42, visible=False)
+
             btn = gr.Button("Generate", variant="primary")
-            
+
         with gr.Column():
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
-            out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
-            #out_img = gr.File(label="Download Image")
+            out_img = gr.Image(
+                label="Generated image:", type="pil", format="png", show_download_button=True
+            )
             with gr.Accordion(label="Status", open=False):
-				download_file = gr.File(label="Download Image:")
-				out_seed = gr.Number(label="Used Seed", interactive=False)
+                download_file = gr.File(label="Download Image:")
+                out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
-    btn.click(generate_image, [prompt, aspect_ratio, steps, quality, seed, randomize], [out_img, download_file, out_seed])
+    btn.click(
+        generate_image,
+        [prompt, aspect_ratio, steps, quality, seed, randomize],
+        [out_img, download_file, out_seed],
+    )
 
 if __name__ == "__main__":
     demo.launch(share=True)
