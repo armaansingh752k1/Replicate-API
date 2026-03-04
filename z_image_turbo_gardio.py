@@ -9,10 +9,9 @@ from io import BytesIO
 def get_dimensions(ratio_str, max_side=1536):
     """Calculates width and height based on ratio string to hit max resolution."""
     ratios = {
-        "1:1": (1, 1), "16:9": (16, 9), "21:9": (21, 9), 
-        "3:2": (3, 2), "2:3": (2, 3), "4:5": (4, 5), 
-        "5:4": (5, 4), "3:4": (3, 4), "4:3": (4, 3), 
-        "9:16": (9, 16), "9:21": (9, 21)
+        "1:1": (1, 1), "16:9": (16, 9), 
+        "3:2": (3, 2), "2:3": (2, 3), "3:4": (3, 4), "4:3": (4, 3), 
+        "9:16": (9, 16)
     }
     rw, rh = ratios.get(ratio_str, (1, 1))
     
@@ -47,8 +46,8 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_se
                 "num_inference_steps": int(num_inference_steps),
                 "width": width,
                 "height": height,
-                "output_format": "png",
-                "output_quality": 100
+                "output_format": output_format,
+                "output_quality": output_quality
             }
         )
         
@@ -83,10 +82,13 @@ with gr.Blocks(theme=custom_theme) as demo:
         with gr.Column():
             prompt = gr.Textbox(label="Prompt", lines=4)
             aspect_ratio = gr.Dropdown(
-                choices=["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3", "9:16", "9:21"],
+                choices=["1:1", "16:9", "3:2", "2:3", "3:4", "4:3", "9:16"],
                 value="3:4", label="Aspect Ratio"
             )
             steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
+            output_quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
+            output_format = gr.Dropdown(
+                choices=["jpg", "png", "webp"], value="jpg", label="Output format")
             
             with gr.Row():
                 randomize = gr.Checkbox(label="Random Seed", value=True)
@@ -96,7 +98,7 @@ with gr.Blocks(theme=custom_theme) as demo:
             
         with gr.Column():
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
-            out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
+            out_img = gr.Image(label="Generated image:", type="pil", format=output_format, show_download_button=True)
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
