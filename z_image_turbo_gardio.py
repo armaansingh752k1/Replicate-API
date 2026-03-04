@@ -25,7 +25,7 @@ def get_dimensions(ratio_str, max_side=1536):
     # Ensure dimensions are multiples of 8 for the model
     return (w // 8) * 8, (h // 8) * 8
 
-def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_seed, output_format, output_quality):
+def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, seed, randomize_seed):
     token = os.environ.get("REPLICATE_API_TOKEN")
     if not token:
         raise gr.Error("REPLICATE_API_TOKEN not found.")
@@ -100,7 +100,7 @@ with gr.Blocks(theme=custom_theme) as demo:
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
-    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize, quality], [out_img, out_seed])
+    btn.click(generate_image, [prompt, aspect_ratio, steps, quality, seed, randomize], [out_img, out_seed])
 
 if __name__ == "__main__":
     demo.launch(share=True)
