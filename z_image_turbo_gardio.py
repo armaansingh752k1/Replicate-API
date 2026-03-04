@@ -25,7 +25,7 @@ def get_dimensions(ratio_str, max_side=1536):
     # Ensure dimensions are multiples of 8 for the model
     return (w // 8) * 8, (h // 8) * 8
 
-def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_seed):
+def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_seed, output_format, output_quality):
     token = os.environ.get("REPLICATE_API_TOKEN")
     if not token:
         raise gr.Error("REPLICATE_API_TOKEN not found.")
@@ -34,7 +34,7 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_se
         seed = random.randint(0, 2**32 - 1)
     
     # Calculate target dimensions for 2048px resolution
-    width, height = get_dimensions(aspect_ratio, max_side=2048)
+    width, height = get_dimensions(aspect_ratio, max_side=1536)
     
     try:
         # Using Flux-Schnell with explicit dimensions and format
