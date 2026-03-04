@@ -62,7 +62,11 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
 
         response = requests.get(image_url)
         image = Image.open(BytesIO(response.content))
-        return image, seed
+        filename = f"z_image_turbo_{seed}.png"
+image.save(filename)
+
+return filename, seed
+        
 
     except Exception as e:
         raise gr.Error(f"Replicate Error: {str(e)}")
@@ -96,7 +100,8 @@ with gr.Blocks(theme=custom_theme) as demo:
             
         with gr.Column():
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
-            out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
+            #out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
+            out_img = gr.File(label="Download Image")
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
