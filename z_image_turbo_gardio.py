@@ -102,7 +102,7 @@ with gr.Blocks(theme=custom_theme) as demo:
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
-    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize], [out_img, out_seed])
+    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize, output_format, output_quality], [out_img, out_seed])
 
 if __name__ == "__main__":
     demo.launch(share=True)
