@@ -46,8 +46,8 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_se
                 "num_inference_steps": int(num_inference_steps),
                 "width": width,
                 "height": height,
-                "output_format": int(output_format),
-                "output_quality": output_quality
+                "output_format": output_format,
+                "output_quality": int(output_quality)
             }
         )
         
