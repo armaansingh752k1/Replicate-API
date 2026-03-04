@@ -99,7 +99,7 @@ with gr.Blocks(theme=custom_theme) as demo:
             
         with gr.Column():
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
-            out_img = gr.Image(label="Generated image:", type="pil", format=output_format, show_download_button=True)
+            out_img = gr.Image(label="Generated image:", type="pil", format=format, show_download_button=True)
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
