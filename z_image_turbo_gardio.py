@@ -93,8 +93,8 @@ with gr.Blocks(theme=custom_theme) as demo:
                 quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
             
             with gr.Row():
-                randomize = gr.Checkbox(label="Random Seed", value=True)
-                seed = gr.Number(label="Seed", value=42, visible=False)
+				randomize = gr.Checkbox(label="Random Seed", value=True)
+				seed = gr.Number(label="Seed", value=42, visible=False)
             
             btn = gr.Button("Generate", variant="primary")
             
@@ -103,8 +103,8 @@ with gr.Blocks(theme=custom_theme) as demo:
             out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
             #out_img = gr.File(label="Download Image")
             with gr.Accordion(label="Status", open=False):
-			    download_file = gr.File(label="Download Image:")
-                out_seed = gr.Number(label="Used Seed", interactive=False)
+				download_file = gr.File(label="Download Image:")
+				out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
     btn.click(generate_image, [prompt, aspect_ratio, steps, quality, seed, randomize], [out_img, download_file, out_seed])
