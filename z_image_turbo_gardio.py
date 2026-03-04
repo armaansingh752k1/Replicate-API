@@ -40,7 +40,7 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, seed, randomize_se
     try:
         # Using Flux-Schnell with explicit dimensions and format
         output = replicate.run(
-            "black-forest-labs/flux-schnell",
+            "prunaai/z-image-turbo",
             input={
                 "prompt": prompt,
                 "seed": int(seed),
@@ -77,7 +77,7 @@ custom_theme = gr.themes.Soft(
 )
 
 with gr.Blocks(theme=custom_theme) as demo:
-    gr.Markdown("# 🚀 High-Res Z-Turbo (Replicate)\nGenerate up to 2048px PNG images.")
+    gr.Markdown("# Z-Image-Turbo (via Replicate API)\nGenerate realistic images with 'prunaai/z-image-turbo'")
     
     with gr.Row():
         with gr.Column():
@@ -86,17 +86,17 @@ with gr.Blocks(theme=custom_theme) as demo:
                 choices=["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3", "9:16", "9:21"],
                 value="3:4", label="Aspect Ratio"
             )
-            steps = gr.Slider(1, 4, value=4, step=1, label="Steps")
+            steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
             
             with gr.Row():
                 randomize = gr.Checkbox(label="Random Seed", value=True)
                 seed = gr.Number(label="Seed", value=42, visible=False)
             
-            btn = gr.Button("Generate PNG", variant="primary")
+            btn = gr.Button("Generate", variant="primary")
             
         with gr.Column():
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
-            out_img = gr.Image(label="2048px Output", type="pil", format="png", show_download_button=True)
+            out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
