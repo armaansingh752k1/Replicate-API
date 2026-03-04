@@ -86,9 +86,10 @@ with gr.Blocks(theme=custom_theme) as demo:
                 value="3:4", label="Aspect Ratio"
             )
             steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
-            output_quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
-            output_format = gr.Dropdown(
+            format = gr.Dropdown(
                 choices=["jpg", "png", "webp"], value="jpg", label="Output format")
+            quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
+            
             
             with gr.Row():
                 randomize = gr.Checkbox(label="Random Seed", value=True)
@@ -102,7 +103,7 @@ with gr.Blocks(theme=custom_theme) as demo:
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
-    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize, output_format, output_quality], [out_img, out_seed])
+    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize, format, quality], [out_img, out_seed])
 
 if __name__ == "__main__":
     demo.launch(share=True)
