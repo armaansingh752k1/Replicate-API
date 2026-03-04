@@ -82,7 +82,7 @@ custom_theme = gr.themes.Soft(
     primary_hue="yellow", secondary_hue="amber", neutral_hue="slate"
 )
 
-with gr.Blocks(theme=custom_theme) as demo:
+with gr.Blocks() as demo:
     gr.Markdown(
         "# Z-Image-Turbo (via Replicate API)\nGenerate realistic images with 'prunaai/z-image-turbo'"
     )
