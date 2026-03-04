@@ -86,9 +86,7 @@ with gr.Blocks(theme=custom_theme) as demo:
                 value="3:4", label="Aspect Ratio"
             )
             steps = gr.Slider(1, 50, value=8, step=1, label="Steps")
-            format = gr.Dropdown(
-                choices=["jpg", "png", "webp"], value="jpg", label="Output format")
-            quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
+            output_quality = gr.Slider(1,100, value=80, step=1, label="Output quality")
             
             
             with gr.Row():
@@ -99,11 +97,11 @@ with gr.Blocks(theme=custom_theme) as demo:
             
         with gr.Column():
             # Use 'png' format in the Image component to ensure Gradio displays it correctly
-            out_img = gr.Image(label="Generated image:", type="pil", format=format, show_download_button=True)
+            out_img = gr.Image(label="Generated image:", type="pil", format="png", show_download_button=True)
             out_seed = gr.Number(label="Used Seed", interactive=False)
 
     randomize.change(lambda r: gr.update(visible=not r), randomize, seed)
-    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize, format, quality], [out_img, out_seed])
+    btn.click(generate_image, [prompt, aspect_ratio, steps, seed, randomize, output_quality], [out_img, out_seed])
 
 if __name__ == "__main__":
     demo.launch(share=True)
