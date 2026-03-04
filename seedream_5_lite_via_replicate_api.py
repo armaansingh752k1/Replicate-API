@@ -45,7 +45,7 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
     try:
         # Using Flux-Schnell with explicit dimensions and format
         output = replicate.run(
-            "bytedance/seedream-5-lite",
+            "bytedance/seedream-4.5",
             input={
                 "prompt": prompt,
                 "seed": int(seed),
