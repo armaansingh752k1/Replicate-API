@@ -53,6 +53,7 @@ def generate_image(prompt, aspect_ratio, num_inference_steps, output_quality, se
                 "width": width,
                 "height": height,
                 "output_quality": int(output_quality),
+                "disable_safety_checker": True
             },
         )
 
